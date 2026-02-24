@@ -10,7 +10,7 @@ services:
       - IBM_MQ_CONN_NAME=mqserver(1414)
     depends_on:
       mqserver:
-        condition: service_healthy
+        condition: service_started
 
   # browse to: https://localhost:9443/ibmmq/console/
   mqserver:
@@ -24,26 +24,7 @@ services:
     environment:
       - LICENSE=accept
       - MQ_QMGR_NAME=QM1
-      - ICC_SHIFT=3
       - MQ_ADMIN_PASSWORD=password123
     stdin_open: true
     tty: true
     restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "dspmq | grep -q QM1 || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 6
-      start_period: 40s
-
-  payment-service:
-    build:
-      context: ./payment-service
-      dockerfile: Dockerfile
-    ports:
-      - 9090:9090
-    environment:
-      - IBM_MQ_CONN_NAME=mqserver(1414)
-    depends_on:
-      mqserver:
-        condition: service_healthy

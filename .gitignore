@@ -41,3 +41,4 @@ build/
 .DS_Store
 
 order-service/mqjms.log.0
+custom-ibm-mq/ssl/*
