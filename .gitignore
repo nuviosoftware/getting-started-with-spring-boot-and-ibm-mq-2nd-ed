@@ -39,3 +39,5 @@ build/
 **/*.log
 .m2/
 .DS_Store
+
+order-service/mqjms.log.0
