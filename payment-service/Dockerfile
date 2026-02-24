@@ -1,8 +1,25 @@
-FROM openjdk:8-jdk-alpine
-EXPOSE 9090
-WORKDIR /app
-COPY target/payment-service-0.0.1-SNAPSHOT.jar /app/payment-service-0.0.1-SNAPSHOT.jar
-ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.2.1/wait /wait
-RUN chmod +x /wait
+# ---------- Build stage ----------
+FROM maven:3.9.9-eclipse-temurin-21 AS builder
 
-ENTRYPOINT /wait && exec java $JVM_OPTIONS -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -jar -Djava.awt.headless=true  payment-service-0.0.1-SNAPSHOT.jar
+WORKDIR /app
+
+COPY pom.xml .
+RUN mvn -B -q -e -DskipTests dependency:go-offline
+
+COPY src ./src
+RUN mvn -B -DskipTests clean package
+
+
+# ---------- Runtime stage ----------
+FROM eclipse-temurin:21-jre-alpine
+
+RUN addgroup -S spring && adduser -S spring -G spring
+
+WORKDIR /app
+COPY --from=builder /app/target/*jar app.jar
+RUN chown spring:spring app.jar
+
+USER spring
+EXPOSE 9090
+
+ENTRYPOINT ["java","-XX:MaxRAMPercentage=75.0","-XX:+ExitOnOutOfMemoryError","-jar","app.jar"]
