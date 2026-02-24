@@ -1,0 +1,41 @@
+# Custom IBM MQ
+This is an example of how to customise an IBM MQ container by changing configuration via '20-config.mqsc'
+
+### Build
+`docker build -t nuviosoftware-mq-local .`
+
+### Default Configuration
+The default options have been selected to match the MQ Docker container development configuration.
+
+This means that you can run a queue manager using that Docker environment and connect to it. This script will run the container on a Linux system.
+
+docker run --env LICENSE=accept \
+  --env MQ_QMGR_NAME=QM1 \
+  --env ICC_SHIFT=3 \
+  --env MQ_ADMIN_PASSWORD=password123 \
+  --publish 1414:1414 \
+  --publish 9443:9443 \
+  --security-opt seccomp=unconfined \
+  --detach \
+nuviosoftware-mq-local
+
+The default attributes are
+
+ibm.mq.queueManager=QM1
+ibm.mq.channel=DEV.ADMIN.SVRCONN
+ibm.mq.connName=localhost(1414)
+ibm.mq.user=admin
+ibm.mq.password=password123
+
+### Extra configuration
+Defined in the '20-config.mqsc' file
+
+```
+* Define custom queues
+DEFINE QLOCAL('ORDER.REQUEST') REPLACE
+DEFINE QLOCAL('ORDER.RESPONSE') REPLACE
+```
+
+### Mq Web console
+Browse to the address
+https://localhost:9443/ibmmq/console

@@ -1,0 +1,41 @@
+version: '2.2'
+
+services:
+
+  order-service:
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      - IBM_MQ_CONN_NAME=mqserver(1414)
+    depends_on:
+      - "mqserver"
+
+  # browse to: https://localhost:9443/ibmmq/console/
+  mqserver:
+    build:
+      context: ./custom-ibm-mq
+      dockerfile: Dockerfile
+    ports:
+      - "1414:1414"
+      - "9443:9443"
+    container_name: mqserver
+    environment:
+      - LICENSE=accept
+      - MQ_QMGR_NAME=QM1
+    stdin_open: true
+    tty: true
+    restart: always
+
+  payment-service:
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    ports:
+      - 9090:9090
+    environment:
+      - IBM_MQ_CONN_NAME=mqserver(1414)
+    depends_on:
+      - "mqserver"
