@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.jms.JMSException;
@@ -23,6 +24,7 @@ public class OrderController {
     @Autowired
     private JmsTemplate jmsTemplate;
 
+    @Transactional
     @PostMapping
     public ResponseEntity<OrderRequest> createOrder(@RequestBody OrderRequest order) throws JMSException {
         logger.info("### 1 ### Order Service sending order message '{}' to the queue", order.message());
