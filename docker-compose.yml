@@ -24,8 +24,9 @@ services:
     environment:
       - LICENSE=accept
       - MQ_QMGR_NAME=QM1
+      - MQ_ADDITIONAL_USERS=APPUSER
+      - MQ_PASSWORD_FILE=true
       - ICC_SHIFT=3
-      - MQ_ADMIN_PASSWORD=password123
     stdin_open: true
     tty: true
     restart: always

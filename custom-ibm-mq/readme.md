@@ -12,10 +12,8 @@ This means that you can run a queue manager using that Docker environment and co
 docker run --env LICENSE=accept \
   --env MQ_QMGR_NAME=QM1 \
   --env ICC_SHIFT=3 \
-  --env MQ_ADMIN_PASSWORD=password123 \
   --publish 1414:1414 \
   --publish 9443:9443 \
-  --security-opt seccomp=unconfined \
   --detach \
 nuviosoftware-mq-local
 
