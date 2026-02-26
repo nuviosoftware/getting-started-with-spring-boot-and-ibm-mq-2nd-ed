@@ -6,7 +6,7 @@ IMAGE="icr.io/ibm-messaging/mq:9.4.0.0-r1"
 LOCAL_SSL_DIR="./ssl"
 KDB_NAME="key.kdb"
 KDB_PW="password"
-CERT_LABEL="ibmwebspheremqQM1"
+CERT_LABEL="ibmwebspheremqqm1"
 CERT_DN="CN=mqserver"
 ARM_FILE="server.arm"
 
@@ -25,10 +25,8 @@ docker run -d \
 
 sleep 2
 
-# We define a helper to run commands with the entropy fix
 run_mq_cmd() {
-    # We use /dev/urandom and a background 'find' to force entropy generation
-    docker exec -w /tmp $CONTAINER_NAME /bin/bash -c "GSK_RNG_SOURCE=/dev/urandom $1"
+    docker exec -w /tmp $CONTAINER_NAME /bin/bash -c "export GSK_RNG_SOURCE=/dev/urandom; $1"
 }
 
 echo "--- 3. Creating Key Database ---"

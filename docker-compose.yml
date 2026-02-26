@@ -8,9 +8,10 @@ services:
       - 8080:8080
     environment:
       - IBM_MQ_CONN_NAME=mqserver(1414)
+      - JAVA_TOOL_OPTIONS=-Dcom.ibm.mq.cfg.useIBMCipherMappings=false -Djavax.net.debug=ssl,handshake
     depends_on:
       mqserver:
-        condition: service_started
+        condition: service_healthy
 
   # browse to: https://localhost:9443/ibmmq/console/
   mqserver:
@@ -19,12 +20,26 @@ services:
       dockerfile: Dockerfile
     ports:
       - "1414:1414"
+      - "1415:1415"
       - "9443:9443"
     container_name: mqserver
     environment:
       - LICENSE=accept
       - MQ_QMGR_NAME=QM1
       - MQ_ADMIN_PASSWORD=password123
+      - MQ_ENABLE_FIPS=false
+      - MQ_DATA_PATH=/var/mqm/data
+    volumes:
+      - mq_data:/var/mqm
     stdin_open: true
     tty: true
-    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "dspmq -m QM1 | grep -q 'STATUS(Running)'" ]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
+    user: "1001"
+
+volumes:
+  mq_data:
