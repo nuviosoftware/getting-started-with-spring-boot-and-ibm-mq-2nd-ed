@@ -24,7 +24,7 @@ public class PaymentService {
     @SendTo("")
     public String receive(Message message) throws JMSException {
         log.info("### 2 ### Processing request. Reply will go to: {}", message.getJMSReplyTo());
-        return (new Random().nextInt(100) >= 20) ? "payment_ok" : "payment_failed";
+        return "payment_ok";
     }
 
 }
