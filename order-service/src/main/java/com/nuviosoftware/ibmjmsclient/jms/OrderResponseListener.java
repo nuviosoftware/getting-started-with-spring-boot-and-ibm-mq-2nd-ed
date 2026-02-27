@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class OrderResponseListener {
     private static final Logger log = LoggerFactory.getLogger(OrderResponseListener.class);
 
-    @JmsListener(destination = "ORDER.RESPONSE")
+    //@JmsListener(destination = "ORDER.RESPONSE")
     public void receive(Message message) throws JMSException {
         TextMessage textMessage = (TextMessage) message;
         log.info("### 4 ### Order Service received message response : {} with correlation id: {}",
