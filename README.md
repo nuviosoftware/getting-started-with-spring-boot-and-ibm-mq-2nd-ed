@@ -15,7 +15,7 @@ This repository contains three local projects used in the examples:
 1. Build the images:
 
 ```
-docker-compose build
+docker-compose build --no-cache
 ```
 
 2. Start the services in the background:
